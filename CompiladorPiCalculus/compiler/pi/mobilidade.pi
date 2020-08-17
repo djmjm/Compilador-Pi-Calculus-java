@@ -1,0 +1,15 @@
+Declare z;
+Declare x;
+Declare ext;
+Declare recebe;
+
+begin_main
+
+	local z. ext<z>. z(recebe). if(z == recebe). print[recebe].
+	| 
+	ext(recebe). x<recebe>.
+	| 
+	x(recebe). recebe<z>.
+	;
+
+end_main

@@ -1,0 +1,32 @@
+Declare nil;
+Declare tree;
+Declare p;
+Declare s;
+Declare q;
+Declare v;
+Declare c;
+Declare u;
+Declare x;
+Declare t;
+Declare rchild;
+Declare lchild;
+Declare info;
+
+begin_main
+		
+		 p<q>. p<s>. p<p>.
+	|	 s<v>. s<x>. s<s>. 
+	|	 q<t>. q<u>. q<q>. 
+	|	 v<nil>. v<nil>. v<v>. 
+	|	 x<nil>. x<nil>. x<x>.
+	|	 t<nil>. t<nil>. t<t>. 
+	|	 u<nil>. u<nil>. u<u>. 
+	|	 nil<nil>. nil<nil>. nil<nil>.
+
+	|	tree<p>. 
+
+	!	 local p. local lchild. local rchild. local info. tree(p). p(lchild). p(rchild). p(info). print[info]. tree<lchild>. tree<rchild>. if(p == nil). return.
+
+	;
+
+end_main

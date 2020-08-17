@@ -1,0 +1,18 @@
+Declare canal;
+Declare recebe;
+Declare envia1;
+Declare envia2;
+Declare envia3;
+Declare contador;
+Declare n1;
+Declare n2;
+
+
+begin_main
+
+	canal<envia1>. | canal<envia2>. | canal<envia3>.
+	! canal(recebe).print[recebe]. contador(recebe). if(recebe == n2). return.
+	| contador<n1>. contador<n1>. contador<n2>. 
+	;
+
+end_main

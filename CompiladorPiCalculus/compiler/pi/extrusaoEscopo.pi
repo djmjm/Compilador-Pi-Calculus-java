@@ -1,0 +1,12 @@
+Declare canal;
+Declare receptor;
+Declare recebe;
+Declare envia;
+
+begin_main
+
+	 local canal. receptor<canal>. canal(recebe). print[recebe]. 
+	 | 
+	 receptor(canal). canal<envia>. ;
+
+end_main

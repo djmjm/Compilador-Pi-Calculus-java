@@ -1,0 +1,9 @@
+Declare canal;
+Declare recebe;
+Declare envia;
+
+begin_main
+
+	 local canal. canal(recebe). print[recebe]. | canal<envia>. ;
+
+end_main

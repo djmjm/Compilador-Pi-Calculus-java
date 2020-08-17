@@ -1,0 +1,19 @@
+Declare canal;
+Declare receptor;
+Declare recebe;
+Declare um;
+Declare dois;
+Declare tres;
+Declare quatro;
+
+begin_main
+
+	 canal(receptor). receptor(recebe). print[recebe]. receptor(recebe). print[recebe].
+	 | 
+	 local receptor. canal<receptor>. receptor<um>. receptor<dois>.
+	 | 
+	 local receptor. canal<receptor>. receptor<tres>. receptor<quatro>.
+
+	 ;
+
+end_main
