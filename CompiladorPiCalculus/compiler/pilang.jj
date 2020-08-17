@@ -1,0 +1,320 @@
+PARSER_BEGIN(pilang)
+
+import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap; 
+import java.util.Map;
+
+
+public class pilang{
+
+	private static Integer num_threads;
+	private static Integer threads_exe;
+	private static Integer num_process;
+	private static Integer num_braces;
+	private static String code;
+	private static LinkedList<String> tabela_simbolos;
+	private static LinkedList<String> tabela_numericos;
+	private static LinkedList<Integer> tabela_numeros;
+	public static void main(String[] args) throws ParseException, TokenMgrError, IOException{
+
+		tabela_simbolos = new LinkedList();
+		tabela_numericos = new LinkedList();
+		tabela_numeros = new LinkedList();
+		num_process = new Integer(0);
+		threads_exe = new Integer(0);
+		num_threads = new Integer(0);
+		num_braces = new Integer(0);
+
+		code = "";
+		code +=  "package pilang." + args[0] + ";\n import pilang.src.*; \n import java.util.concurrent.ConcurrentLinkedQueue; \n import java.util.HashMap; \n import java.util.Map;";
+
+		code += "\n public class " + args[0] + "{ ";
+
+
+
+		pilang parser = new pilang(System.in);
+		parser.start();
+
+
+		File file =  new File("java/" + args[0] + ".java");
+		BufferedWriter escritor = new BufferedWriter(new FileWriter(file));
+
+		code += " \n } ";
+
+
+		escritor.write(code);
+		escritor.close();
+
+		System.out.println(tabela_simbolos);
+		System.out.println(tabela_numericos);
+
+	}
+}
+
+
+PARSER_END(pilang)
+
+
+//Tokens
+
+SKIP : {" "}
+SKIP : {"\n" | "\r" | "\r\n\t" | "\t"}
+TOKEN : { <BEGIN_MAIN : "begin_main" > }
+TOKEN : { <END_MAIN : "end_main" >}
+TOKEN : { <SEMI : ";" >}
+TOKEN : { <COMMA : "," >}
+TOKEN : { <L_BRACE : "(" >}
+TOKEN : { <R_BRACE : ")" >}
+TOKEN : { <IF : "if" >}
+TOKEN : { <PAR : "|" >}
+TOKEN : { <EQUAL : "=" >}
+TOKEN : { <PRINT : "print" >}
+TOKEN : { <L_BRA : "[" >}
+TOKEN : { <R_BRA : "]" >}
+TOKEN : { <LOCAL : "local" >}
+TOKEN : { <RETURN: "return">}
+TOKEN : { <R_ANG : ">" >}
+TOKEN : { <L_ANG : "<" >}
+TOKEN : { <IDENT_L : ( (["a"-"z"])+) (["0"-"9"])* >}
+TOKEN : { <NUMBER : (["0"-"9"])+ >}
+TOKEN : { <DOT : "." >}
+TOKEN : { <DECLARE : "Declare" >}
+TOKEN : { <NUMERICO : "Number">}
+TOKEN : { <REPL : "!">}
+
+
+//Gramática
+
+// Regra de início
+void start():
+{}
+{
+	define() 
+	{
+		code += "\n \t public static void main(String[] args){";
+		for(int i = 0; i < tabela_simbolos.size(); i++){
+			code += "\n \t \t \t " + tabela_simbolos.get(i) + " = new Agente(\"" + tabela_simbolos.get(i) + "\") ;" ;
+		}
+		for(int i = 0; i < tabela_numericos.size(); i++){
+			code += "\n \t \t \t " + tabela_numericos.get(i) + " = new Numerico(\"" + tabela_numericos.get(i) + "\"," + tabela_numeros.get(i) +  ") ;" ;
+		}
+	}
+	<BEGIN_MAIN> block() 
+	<END_MAIN> 
+	{
+		code += "\n \t \t }";
+	}
+}
+
+void define():
+{
+	Token ident;
+	Token numero;
+}
+{
+	(  ( (<DECLARE> 
+	{ 
+		code += " \n \t private static Agente ";} ident = <IDENT_L> { code += ident.image + " ;"; 
+		tabela_simbolos.add(ident.image); 
+	} <SEMI>) | ( <NUMERICO>
+	{
+		code += " \n \t private static Numerico ";} ident = <IDENT_L> { code += ident.image + " ;"; 
+		tabela_numericos.add(ident.image);
+	} numero = <NUMBER>
+	{
+		tabela_numeros.add(Integer.parseInt(numero.image));
+	}
+	<SEMI>) )define() )?
+}
+
+void block():
+{}
+{
+	( statement() <SEMI> 
+	{
+		code += "\n \t \t // Execução processos ....";
+	 	for(int i = threads_exe; i< num_threads; i++){
+			code += " \n \t  \t t" + i + ".start();";
+		};  
+
+		code += "\n \t \t try{";
+		for(int i = threads_exe; i< num_threads; i++){
+			code += " \n \t  \t t" + i + ".join();";
+		}; 
+		code += "\n \t \t } catch(InterruptedException e){";
+		code += "\n \t \t System.out.println(e);";
+		code += "\n \t \t };";
+		threads_exe = num_threads;
+	}
+
+	block() )?
+}
+
+void statement():
+{}
+{
+	{ 
+		code += " \n \t \t \t \t // Processo " + num_threads;
+		code += " \n \t \t \t Processo t" + num_threads + " = new Processo() { " ;
+		code += " \n \t \t \t \t public void run() { ";
+		code += "\n";
+		code += " \n \t \t \t \t // começo execução ;;;";
+	} 
+	( process() 
+	{ 
+		while(num_braces > 0){
+			code += " \n \t \t \t \t \t };";
+			num_braces--;
+		}
+		code += " \n \t \t \t \t } \n \t \t \t } ;"; 
+		num_threads++; 
+	} 
+	statement_2() )
+}
+
+void statement_2():
+{}
+{
+	(  
+	{ 
+		code += " \n \t \t \t \t // Processo " + num_threads;
+		code += " \n \t \t \t Processo t" + num_threads + " = new Processo() { " ;
+		code += " \n \t \t \t \t public void run() { " ;
+		code += "\n";
+		code += " \n \t \t \t \t // começo execução ;;;";
+	} 
+	( par() 
+	{ 
+		while(num_braces > 0){
+			code += " \n \t \t \t \t \t };";
+			num_braces--;
+		}
+		code += " \n \t \t \t \t } \n \t \t \t } ;"; 
+		num_threads++; 
+	}  | 
+	{
+	code += "\n \t \t \t \t boolean retorno = true;\n \t \t \t \t while (retorno){ ";
+	}
+	rep()
+	{
+		while(num_braces > 0){
+			code += " \n \t \t \t \t \t };";
+			num_braces--;
+		}
+		code += " \n \t \t \t \t } \n \t \t \t \t } \n \t \t \t } ;"; 
+		num_threads++; 
+	} 
+
+	)
+	statement_2 ()  )?
+}
+
+void par():
+{}
+{
+	<PAR> process()
+}
+
+void rep():
+{}
+{
+	<REPL> process()
+}
+
+void process():
+{}
+{
+	( prefix() | print() | ex() | if_rul() | return1() ) process_2()
+
+}
+
+void process_2():
+{}
+{
+	( ( prefix() | print() | ex() | if_rul() | return1() ) process_2())?
+
+}
+
+void return1():
+{Token ident;}
+{
+	<RETURN>
+	{
+		code += "\n \t \t \t \t \t retorno = false;" ;
+	} <DOT>
+}
+
+void if_rul():
+{
+	Token ident1;
+ 	Token ident2;
+}
+{
+	<IF> <L_BRACE> ident1 = <IDENT_L> <EQUAL> <EQUAL> ident2 = <IDENT_L> 
+	{
+		num_braces++;
+		code += "\n \t \t \t \t \t if(" + ident1.image + ".equal(tabela," + ident2.image + ")){";
+
+	}
+	<R_BRACE> <DOT>
+}
+
+void print():
+{Token ident;}
+{
+	<PRINT> <L_BRA> ident = <IDENT_L> 
+	{ 
+		code += "\n \t \t \t \t \t " + ident.image + ".print(tabela);"; 
+	} 
+	<R_BRA> <DOT>
+}
+
+void ex():
+{Token ident;}
+{
+	<LOCAL> ident = <IDENT_L> 
+	{
+		code += "\n \t \t \t \t \t Agente " + ident.image + " = new Agente(\"" + ident.image + "\");";
+		code += "\n \t \t \t \t \t setParam(\"" + ident.image + "\"," + ident.image +");";
+	}
+	<DOT>
+}
+
+void prefix():
+{Token ident;}
+{
+	ident = <IDENT_L> {
+		code += "\n \t \t \t \t \t " + ident.image;
+	}prefix_2()
+}
+
+void prefix_2():
+{}
+{
+	in() | out()
+}
+
+void out():
+{Token ident;}
+{
+	<L_ANG> ident = <IDENT_L> 
+	{
+		code += ".send(tabela," + ident.image + ");";
+	} 
+	<R_ANG> <DOT>
+}
+
+void in():
+{Token ident;}
+{
+	<L_BRACE> ident = <IDENT_L> 
+	{
+		code += ".receive(tabela," + ident.image + ");";
+	} 
+
+	<R_BRACE> <DOT>
+}
