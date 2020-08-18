@@ -21,5 +21,9 @@ O arquivo *.java* gerado ficará armazenado na pasta [java](CompiladorPiCalculus
 
 > java test.java
 
+Após rodar o programa, a saída da imagem abaixo deverá ser impressa:
+
+<img src="exemploSaida.png">
+
 
 
