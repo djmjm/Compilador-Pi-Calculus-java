@@ -4,7 +4,7 @@ Trabalho desenvolvido para a disciplina Trabalho de conclusão de curso, do curs
 
 # Pré-requisitos
 
-Como pré-requisito, é necessário ter instalado uma versão java superior ou igual à 13.0.1. Também é necessário ter o javacc instalado, lembrando que os testes foram feitos com a versão 5.
+Como pré-requisito, é necessário ter instalado uma versão java JDK superior ou igual à 13.0.1. Também é necessário ter o javacc instalado, lembrando que os testes foram feitos com a versão 5.
 
 # Como rodar
 
