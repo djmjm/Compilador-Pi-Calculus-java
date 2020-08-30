@@ -1,6 +1,6 @@
-# linguagem baseada no pi calculus e um compilador para java
+# Pialang: uma linguagem baseada no pi calculus e um compilador para java
 
-Trabalho desenvolvido para a disciplina Trabalho de conclusão de curso, do curso ciência da Computação, da Universidade Federal de Pelotas. Nesse trabalho, foi desenvolvida uma linguagem de programação baseada no Pi Calculus e um compilador que traduz essa linguagem para java. Esse repositório contém exemplos de programas escritos na linguagem criada e o código fonte do compilador.
+Trabalho desenvolvido para a disciplina Trabalho de conclusão de curso, do curso ciência da Computação, da Universidade Federal de Pelotas. Nesse trabalho, foi desenvolvida uma linguagem de programação baseada no Pi Calculus, denominada Pilang, e um compilador que traduz essa linguagem para java. Esse repositório contém exemplos de programas escritos na linguagem criada e o código fonte do compilador.
 
 # Pré-requisitos
 
